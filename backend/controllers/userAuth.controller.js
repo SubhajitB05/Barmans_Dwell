@@ -87,7 +87,11 @@ const handleUserLogin = async (req, res) => {
 
         //Case - Correct password, Login Success - Generate JWT token and store in browser cookie
         const token = generateToken(user);
-        return res.status(200).cookie("token", token).json({
+        return res.status(200).cookie("token", token, {
+          httpOnly:true,
+          secure:true,
+          sameSite:"None"
+        }).json({
           message: "User logged in successfully",
           success: true,
           token
