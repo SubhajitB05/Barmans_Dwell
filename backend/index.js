@@ -9,7 +9,6 @@ import cookieParser from 'cookie-parser';
 
 import userAuthRoute from './routes/userAuth.route.js';
 import connectToMongoDB from './connectDB/connectToMongoDB.js';
-// import {validateUser} from './middlewares/validateUser.middleware.js'
 
 // Connect to MOngoDB and Start the server
 connectToMongoDB(URI)
@@ -26,11 +25,10 @@ connectToMongoDB(URI)
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(cors({
-    origin:'http://localhost:5173',
+    origin:'https://barmans-dwell.vercel.app',
     credentials:true
 }));
 app.use(cookieParser());
-// app.use(validateUser());
 
 
 // Routes
