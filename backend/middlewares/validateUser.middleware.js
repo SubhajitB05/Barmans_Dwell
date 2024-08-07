@@ -1,11 +1,11 @@
 import verifyToken from "../utils/verifyToken.js";
 
-const validateUser = 
-  (req, res, next) => {
+const validateUser = (req, res, next) => {
     try {
-      const userToken = req.cookies?.token;
+      const userToken = req.headers['authorization'];
+
       if (!userToken) {
-        return res.status(401).json({
+        return res.status(403).json({
           message: "Unauthorized User! No token provided",
           success: false,
         });

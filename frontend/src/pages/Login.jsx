@@ -27,7 +27,8 @@ const Login = () => {
         },
         withCredentials: true
       });
-      if (response.data.success) {
+      if (response.data.success){
+        localStorage.setItem('token', response.data.token);
         toast.success(response.data.message);
         navigate("/users/dashboard");
       } 

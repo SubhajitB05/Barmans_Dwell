@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import "../index.css";
 import house from "../assets/house.png";
-import Cookie from 'js-cookie';
+// import Cookie from 'js-cookie';
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axios from 'axios';
@@ -15,36 +15,20 @@ const Navigationbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(()=>{
-    const token =  Cookie.get('token');
+    const token =  localStorage.getItem('token');
     if(token){ 
-      setIsLoggedIn(()=>true);
+      setIsLoggedIn(true);
     }
   });
 
   const handleLogout = ()=>{
-    try {
       setLoading(true);
-      axios.get('/users/auth/logout', {
-        withCredentials:true
-      }).then(response=>{
-        if(response.data.success){
-          setIsLoggedIn(()=>false);
-          toast.success(response.data.message);
-          navigate('/users/auth/login');
-        }
-        else{
-          toast.error(response.data.message);
-        }
-      }).catch(error=>{
-        toast.error(error.data.message); 
-      })
-    } catch (error) {
-      console.log(error);
-    }
-    finally{
+      localStorage.removeItem('token');
+      setIsLoggedIn(false);
+      toast.success("Logout Successful");
       setLoading(false);
+      navigate('/users/auth/login');
     }
-  }
 
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary fixed-top ps-5 pe-5 shadow-sm py-2">

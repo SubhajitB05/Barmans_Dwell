@@ -85,9 +85,9 @@ const handleUserLogin = async (req, res) => {
             .json({ message: "Invalid password", success: false });
         }
 
-        //Case - Correct password, Login Success - Generate JWT token and store in browser cookie
+        //Case - Correct password, Login Success - Generate JWT token 
         const token = generateToken(user);
-        return res.status(200).cookie("token", token).json({
+        return res.status(200).json({
           message: "User logged in successfully",
           success: true,
           token
@@ -131,21 +131,20 @@ const handleUserLogin = async (req, res) => {
   }
 };
 
-const handleUserLogout = async (req, res) => {
-  try {
-    res.clearCookie('token');
-    return res.status(200).json({
-      message: "User logged out successfully",
-      success: true,
-    })
+// const handleUserLogout = async (req, res) => {
+//   try {
+//     return res.status(200).json({
+//       message: "User logged out successfully",
+//       success: true,
+//     })
     
-  } catch (error) {
-    return res.staus(500).json({
-      message: "Internal Server Error",
-      success:false
-    })
-  }
-};
+//   } catch (error) {
+//     return res.staus(500).json({
+//       message: "Internal Server Error",
+//       success:false
+//     })
+//   }
+// };
 
 const handleUserDashboard = async(req, res)=>{
   try {
@@ -163,4 +162,4 @@ const handleUserDashboard = async(req, res)=>{
   }
 }
 
-export { handleUserRegistration, handleUserLogin, handleUserLogout, handleUserDashboard };
+export { handleUserRegistration, handleUserLogin, handleUserDashboard };
