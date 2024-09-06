@@ -2,15 +2,24 @@ import verifyToken from "../utils/verifyToken.js";
 
 const validateUser = (req, res, next) => {
     try {
-      const userToken = req.headers['authorization'];
+      const authHeader = req.headers['authorization'];
 
-      if (!userToken) {
+      if (!authHeader) {
         return res.status(403).json({
           message: "Unauthorized User! No token provided",
           success: false,
         });
       }
-      const decoded = verifyToken(userToken);
+
+      const token = authHeader.split(' ')[1];
+      if (!token) {
+        return res.status(401).json({
+            message: "Invalid authorization format",
+            success: false,
+        });
+    }
+
+      const decoded = verifyToken(token);
       if (!decoded) {
         return res.status(401).json({
           message: "Invalid token",

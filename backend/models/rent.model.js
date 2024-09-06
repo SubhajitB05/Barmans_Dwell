@@ -12,14 +12,9 @@ const rentSchema = new Schema(
       required: true,
       default: 1500,
     },
-    dueDate: {
+    dueDate: { // Joining date
       type: Date, // Use Date type for dates
       required: true,
-    },
-    isPaid: {
-      type: Boolean,
-      required: true,
-      default: false,
     },
     paymentHistory: [
       {

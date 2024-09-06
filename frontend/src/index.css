@@ -15,6 +15,12 @@ body{
     margin-top: 8rem;
     margin-bottom: 6rem;
 }
+.pt-xxl{
+    padding-top: 8rem;
+}
+.pt-xl{
+    padding-top: 5rem;
+}
 .heading{
     position:relative;
     display: inline-block;
@@ -40,11 +46,32 @@ input[type="number"]::-webkit-outer-spin-button,
 }
 
 .row{
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     justify-content: center;
     margin-left: 0.5rem;
     margin-right: 0.5rem;
 }
+.row .col{
+    margin-bottom: 0.5rem;
+}
 ul{
     list-style: none;
+}
+
+.dashboard{
+    min-height: 100vh;
+}
+
+.form-group{
+    margin-bottom: 1rem;
+}
+
+@media screen and (max-width:680px) {
+    .navbar{
+        padding-left: 7px !important;
+        padding-right: 7px !important;
+    }
+    .container, .content{
+        padding: 0 0.5rem !important;
+    }
 }

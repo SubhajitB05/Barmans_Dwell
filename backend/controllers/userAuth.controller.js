@@ -88,9 +88,9 @@ const handleUserLogin = async (req, res) => {
         //Case - Correct password, Login Success - Generate JWT token 
         const token = generateToken(user);
         return res.status(200).json({
-          message: "User logged in successfully",
+          message: "Login successful",
           success: true,
-          token
+          token,
         });
       }
 
@@ -131,26 +131,29 @@ const handleUserLogin = async (req, res) => {
   }
 };
 
-// const handleUserLogout = async (req, res) => {
-//   try {
-//     return res.status(200).json({
-//       message: "User logged out successfully",
-//       success: true,
-//     })
-    
-//   } catch (error) {
-//     return res.staus(500).json({
-//       message: "Internal Server Error",
-//       success:false
-//     })
-//   }
-// };
+
 
 const handleUserDashboard = async(req, res)=>{
   try {
-    const user = await User.findById({_id:req.user._id});
+    const userId = req.params.id;
+    console.log(userId);
+
+    if(req.user._id !== userId && req.user.role !== 'admin'){
+      return res.status(403).json({
+        message:"Access denied",
+        success:false
+        });
+    }
+
+    const user = await User.findOne({_id:userId}, {password:0});
+    if(!user){
+      return res.status(404).json({
+        message:"User not found",
+        success:false
+      })
+    }
     return res.status(200).json({
-      message:'Login to user dashboard successful',
+      message:'User dashboard data retrieved successfully',
       success: true,
       user:user
     })
