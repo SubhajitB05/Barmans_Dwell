@@ -1,6 +1,6 @@
 import '../pages/dashboard/dashboard.styles.css';
 
-const Box = ({prop, width='100%', height='200px', data}) => {
+const Box = ({prop, width='100%', height='200px', data=[]}) => {
  
   return (
     <div
@@ -11,10 +11,11 @@ const Box = ({prop, width='100%', height='200px', data}) => {
             borderRadius:'10px',
             boxShadow:'-2px 2px 6px 3px #e0e0eb'
         }}
-        className='box p-4'
+        className='box p-4 d-flex flex-column justify-content-center align-items-center'
 
     >
-      <h2 className='text-white  text-center'>{data}</h2>
+      <h4 className='text-white text-center'>{data[0]}</h4>
+      <h2 className='text-white text-center'>{data[1]}</h2>
     </div>
   )
 }

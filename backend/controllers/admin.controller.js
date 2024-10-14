@@ -91,32 +91,79 @@ export const handleGetUserById = async (req, res) => {
   }
 };
 
-export const handleGetUserRent = async (req, res) => {};
+export const handleGetUserRent = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const userRent = await Rent.findOne({ user: id });
+    if (!userRent) {
+      return res.status(400).json({
+        message: "User has no rent",
+        status: false,
+      });
+    }
+    return res.status(200).json({
+      message: "User rent found",
+      status: true,
+      rentDetails: userRent,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Internal server error",
+      success: false,
+    });
+  }
+};
 
 export const handleGetUserPayment = async (req, res) => {};
 
 export const handleGetUserELectricityBill = async (req, res) => {};
 
-export const handleAddUserRent = async (req, res)=>{
+export const handleAddUserRent = async (req, res) => {
+
   const id = req.params.id;
-  const {rentAmount, rentPaymentDate} = req.body;
+  const { rentAmount, rentPaymentDate } = req.body;
   try {
     const user = await User.findById(id);
-    if(!user){
+    if (!user) {
       return res.status(404).json({
         message: "User not found",
-        success:false
+        success: false,
       });
     }
-    const dueAmount = rentAmount != 1500 ? (1500-rentAmount) : 0;
-    const newRent = await Rent.create({
-      user:user._id,
+    const dueAmount = rentAmount != 1500 ? 1500 - rentAmount : 0;
+    const ExistingUser = await Rent.findOne({ user: id });
+    if (ExistingUser === null)
+      return res.status(404).json({
+        message: "Rent for the user is not found",
+        success: false,
+      });
 
-    })
-    
+    if (ExistingUser) {
+      // Push new data to paymentHistory array
+      ExistingUser.paymentHistory.unshift({
+        paymentDate: rentPaymentDate,
+        amountPaid: rentAmount,
+      });
+
+      // Push new data to dueList array
+      ExistingUser.dueList.unshift({
+        dueDate: rentPaymentDate,
+        amountDue: dueAmount,
+      });
+
+      // Save the updated document back to the database
+      await ExistingUser.save();
+    }
+    return res.status(200).json({
+      message: "Rent updated successfully",
+      success: true,
+      rentDetails: ExistingUser,
+    });
   } catch (error) {
-    
+    console.log(error);
+    return res.status(505).json({
+      message: "Internal Server Error",
+      success: false,
+    });
   }
-
-
-}
+};

@@ -9,6 +9,7 @@ axios.defaults.baseURL = 'https://barmans-dwell-backend.vercel.app';
 
 // For locally running project
 // axios.defaults.baseURL = 'http://localhost:8000';
+
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 ReactDOM.createRoot(document.getElementById('root')).render(

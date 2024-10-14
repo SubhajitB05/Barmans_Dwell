@@ -2,9 +2,14 @@ import { useEffect, useState } from "react";
 import "../../index.css";
 import axios from "axios";
 import { useNavigate, Outlet, useParams } from "react-router-dom";
-import Sidebar from "./Sidebar";
+import Sidebar from "../../components/Sidebar";
 import { FaBarsStaggered } from "react-icons/fa6";
 import D1 from "./D1";
+import { RxDashboard } from "react-icons/rx";
+import { RiHomeOfficeFill } from "react-icons/ri";
+import { RiLightbulbFlashFill } from "react-icons/ri";
+import { BsCashCoin } from "react-icons/bs";
+import { ImHistory } from "react-icons/im";
 
 const Dashboard = () => {
   const [userData, setUserData] = useState(null);
@@ -12,6 +17,39 @@ const Dashboard = () => {
   const [collapse, setCollapse] = useState(false);
 
   const {userId} = useParams();
+
+  const sidebarItems = [
+    {
+      id:0,
+      title:'Dashboard',
+      path:`/users/${userId}/dashboard`,
+      icon: <RxDashboard size={22}/>
+    },
+    {
+      id:1,
+      title: 'Home Rent',
+      path: `/users/${userId}/dashboard/home-rent`,
+      icon:<RiHomeOfficeFill size={22}/>
+    },
+    {
+      id:2,
+      title: 'Electricity Bill',
+      path: `/users/${userId}/dashboard/electricity-bill`,
+      icon: <RiLightbulbFlashFill size={22} />
+    },
+    {
+      id:3,
+      title: 'Pay Online',
+      path: `/users/${userId}/dashboard/online-payment`,
+      icon: <BsCashCoin size={22} />
+    },
+    {
+      id:4,
+      title: 'Payment History',
+      path: `/users/${userId}/dashboard/payment-history`,
+      icon: <ImHistory size={22} />
+    }
+  ];
 
   const handleToggle = () => {};
 
@@ -45,7 +83,7 @@ const Dashboard = () => {
         }}
       >
         <div className="sidebar-wrapper position-sticky top-0">
-          <Sidebar collapse={collapse} />
+          <Sidebar collapse={collapse} sidebarItems={sidebarItems}/>
           <span
             className="position-absolute"
             style={{

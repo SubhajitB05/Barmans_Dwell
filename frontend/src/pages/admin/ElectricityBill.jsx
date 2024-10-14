@@ -31,16 +31,16 @@ const AdminUserBill = () => {
     <div className='mt-xxl container'>
       <div className="box-container row mb-5">
         <div className="col col-12 col-lg-3 col-md-6 col-sm-12">
-          <Box prop={["green", "red"]} data={"Joining Date"} />
+          <Box prop={["green", "red"]} data={["Joining Date", '0-0-0']} />
         </div>
         <div className="col col-12 col-lg-3 col-md-6 col-sm-12">
-          <Box prop={["green", "red"]} data={"Electricity Rate Amount"} />
+          <Box prop={["green", "red"]} data={["Electricity Rate Amount", 8.00]} />
         </div>
         <div className="col col-12 col-lg-3 col-md-6 col-sm-12">
-          <Box prop={["green", "red"]} data={"Current Active Due"} />
+          <Box prop={["green", "red"]} data={["Current Active Due", 0]} />
         </div>
         <div className="col col-12 col-lg-3 col-md-6 col-sm-12">
-          <Box prop={["green", "red"]} data={"Total Due"} />
+          <Box prop={["green", "red"]} data={["Total Due", 0]} />
         </div>
       </div>
 

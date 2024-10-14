@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Box from "../../components/Box";
 import { Button } from "@mui/material";
 import axios from 'axios';
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-
+import { toast } from 'react-toastify';
 
 const AdminUserRent = () => {
 
@@ -14,9 +14,13 @@ const AdminUserRent = () => {
 
   const [tabIndex, setTabIndex] = useState(0);
   const [rentData, setRentData] = useState({
-    rentAmount:0,
+    rentAmount:'',
     rentPaymentDate:''
   });
+
+  const [allPaidRent, setAllPaidRent] = useState([]);
+  const [dueList, setDueList] = useState([]);
+  const [rentDetails, setRentDetails] = useState({});
 
   const handleAddRent = (e) => {
     e.preventDefault();
@@ -24,30 +28,60 @@ const AdminUserRent = () => {
       navigate('/users/auth/login');
       return;
     }
+
     if(token){
-      axios.post(`/admin/users/:id/rent`, rentData, {
+      axios.post(`/admin/users/${id}/rent`, rentData, {
         headers: {
           'Authorization': `Bearer ${token}`
-          }
-      }).then(res=>console.log(res))
-      .catch(err=>console.log(err));
+          },
+        withCredentials:true
+      }).then(res=>{
+        toast.success(res.data.message);
+        setRentData({rentAmount:'', rentPaymentDate:''});
+        fetchRentDetails();
+      })
+      .catch(err=>{
+        console.log(err.response.data.message);
+      });
     }
   };
+
+  const fetchRentDetails = () => {
+    axios.get(`/admin/users/${id}/rent`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+      withCredentials: true,
+    })
+    .then((res) => {
+      setRentDetails(res.data.rentDetails);
+      setAllPaidRent(res.data.rentDetails.paymentHistory || []); // Safely update state
+      setDueList(res.data.rentDetails.dueList || []);
+    })
+    .catch((err) => {
+      toast.error(err.response.data.message);
+    });
+  };
+
+  useEffect(() => {
+  fetchRentDetails();
+}, []);
+
 
   return (
     <div className="mt-xxl container">
       <div className="box-container row mb-5">
         <div className="col col-12 col-lg-3 col-md-6 col-sm-12">
-          <Box prop={["green", "red"]} data={"Joining Date"} />
+          <Box prop={["green", "red"]} data={["Joining Date", `${rentDetails?.dueDate?.split('T')[0]}`]} />
         </div>
         <div className="col col-12 col-lg-3 col-md-6 col-sm-12">
-          <Box prop={["green", "red"]} data={"Rent Amount"} />
+          <Box prop={["green", "red"]} data={["Rent Amount", 1500]} />
         </div>
         <div className="col col-12 col-lg-3 col-md-6 col-sm-12">
-          <Box prop={["green", "red"]} data={"Current Active Due"} />
+          <Box prop={["green", "red"]} data={["Current Active Due", 0]} />
         </div>
         <div className="col col-12 col-lg-3 col-md-6 col-sm-12">
-          <Box prop={["green", "red"]} data={"Total Due"} />
+          <Box prop={["green", "red"]} data={["Total Due", 0]} />
         </div>
       </div>
 
@@ -56,11 +90,11 @@ const AdminUserRent = () => {
         <form onSubmit={handleAddRent}>
           <div className="form-group mb-2">
             <label className="form-label">Rent Amount Paid</label>
-            <input type="number" className="form-control" name='rentAmount' onChange={(e)=>setRentData({...rentData, rentAmount:e.target.value})}/>
+            <input type="number" className="form-control" name='rentAmount' value={rentData.rentAmount} onChange={(e)=>setRentData({...rentData, rentAmount:e.target.value})}/>
           </div>
           <div className="form-group">
             <label className="form-label">Date</label>
-            <input type="date" className="form-control" name='rentPaymentDate' onChange={(e)=>setRentData({...rentData, rentPaymentDate:e.target.value})}/>
+            <input type="date" className="form-control" name='rentPaymentDate' value={rentData.rentPaymentDate} onChange={(e)=>setRentData({...rentData, rentPaymentDate:e.target.value})}/>
           </div>
           <button className="btn btn-primary mt-3" type="submit">Add</button>
         </form>
@@ -83,35 +117,55 @@ const AdminUserRent = () => {
             <thead>
               <tr>
                 <th scope="col">#</th>
-                <th scope="col">First</th>
-                <th scope="col">Last</th>
-                <th scope="col">Handle</th>
+                <th scope="col">Date</th>
+                <th scope="col">Amount Paid</th>
+                <th scope="col">View</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-              </tr>
-              <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-              </tr>
-              <tr>
-                <th scope="row">3</th>
-                <td colspan="2">Larry the Bird</td>
-                <td>@twitter</td>
-              </tr>
+              {
+                allPaidRent.map((item, index)=>{
+                  return (
+                    <tr key={index}>
+                      <th scope="row">{index+1}</th>
+                      <td>{item.paymentDate.split('T')[0]}</td>
+                      <td>{item.amountPaid}</td>
+                      <td>View</td>
+                    </tr>
+                  )
+                })
+              }
+            
             </tbody>
           </table>
             )
             :
             (
-              <div>No Dues</div>
+            <table class="table table-hover align-middle">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Date</th>
+                <th scope="col">Due Amount</th>
+                <th scope="col">View</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                dueList.map((item, index)=>{
+                  return (
+                    <tr key={index}>
+                      <th scope="row">{index+1}</th>
+                      <td>{item.dueDate.split('T')[0]}</td>
+                      <td>{item.amountDue}</td>
+                      <td>View</td>
+                    </tr>
+                  )
+                })
+              }
+            
+            </tbody>
+          </table>
             )
           }
         </div>

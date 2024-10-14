@@ -35,7 +35,7 @@ const AdminUsers = () => {
 
   return (
     <div className='container mt-xxl'>
-      <div>
+      <div className="container-fluid">
         {users.length > 0 ? (
           users.map((user) => (
             <div className="card mb-3" key={user._id}>

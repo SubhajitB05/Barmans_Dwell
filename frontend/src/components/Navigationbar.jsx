@@ -7,10 +7,12 @@ import BackdropLoader from './BackdropLoader';
 import avatar from '../assets/avatar.png';
 import { useSelector, useDispatch } from 'react-redux';
 import { logoutSuccess } from '../features/auth/authSlice'; // Adjust the path to your authSlice file
+import useWindowWidth from "../hooks/useWindowWidth";
 
 const Navigationbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const windowWIdth = useWindowWidth();
 
   // Accessing authentication state and role from Redux
   const { isAuthenticated, role, user} = useSelector((state) => state.auth);
@@ -40,14 +42,20 @@ const Navigationbar = () => {
             >
               B
             </span>
-            arman's{" "}
+            {
+              windowWIdth < 600 ? "" : 
+              "arman's "
+            }
             <span
               className="fs-2 fw-bold"
               style={{ color: "var(--secondary-color)" }}
             >
               D
             </span>
-            well
+            {
+              windowWIdth < 600 ? "" :
+              "well " 
+            }
           </span>
         </Link>
         <button

@@ -1,4 +1,5 @@
 import User from "../models/user.model.js";
+import Rent from "../models/rent.model.js";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../utils/generateToken.js";
 
@@ -32,7 +33,7 @@ const handleUserRegistration = async (req, res) => {
       });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
-    await User.create({
+    const newUser = await User.create({
       firstName,
       middleName,
       lastName,
@@ -48,6 +49,17 @@ const handleUserRegistration = async (req, res) => {
       aadhaarPhoto,
       password: hashedPassword,
     });
+
+    // Initialize Rent Collection for that new user
+    if(newUser){
+      await Rent.create({
+        user: newUser._id,
+        rentAmount:1500,
+        dueDate: newUser.createdAt,
+        paymentHistory:[],
+        dueList:[],
+      });
+    }
     return res.status(200).json({
       message: "User created successfully",
       success: true,
@@ -136,7 +148,6 @@ const handleUserLogin = async (req, res) => {
 const handleUserDashboard = async(req, res)=>{
   try {
     const userId = req.params.id;
-    console.log(userId);
 
     if(req.user._id !== userId && req.user.role !== 'admin'){
       return res.status(403).json({
